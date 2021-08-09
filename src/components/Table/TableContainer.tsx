@@ -1,61 +1,42 @@
 import React from "react";
-import { DataItem } from "./interfaces";
+import { RowContainer } from "../Row/RowContainer";
+import { TableItem } from "./interfaces";
 import { Table } from "./Table";
 
 interface Props {
-  data: Array<DataItem>;
+  tableItems: Array<TableItem>;
 }
 
-const map = new Map();
+export const TableContainer: React.FC<Props> = ({ tableItems }) => {
+  type RecordKey = typeof tableItems[number]["id"];
 
-map.set("2", new Map());
+  const [collapsedItems, setCollapseItems] = React.useState<
+    Record<RecordKey, boolean>
+  >({});
 
-export const TableContainer: React.FC<Props> = ({ data }) => {
-  const objectData: Record<number, DataItem> = {};
-  for (let item of data) {
-    objectData[item.id] = item;
-  }
+  React.useEffect(() => {
+    console.table(collapsedItems);
+  }, [collapsedItems]);
 
-  // function generateTableData(data: Array<DataItem>, parentId: number) {
-  //   const generatedArr: Array<DataItem & {children?: Array<DataItem>}> = []
+  const toggleCollapse = (id: RecordKey) => {
+    setCollapseItems((collapsedItems) => ({
+      ...collapsedItems,
+      [id]: !collapsedItems[id],
+    }));
+  };
 
-  //   const filteredByParent = data.filter(item => item.parentId === parentId)
+  const getCollapsed = (id: RecordKey) => {
+    return !Boolean(collapsedItems[id]);
+  };
 
-  //   for (let item of filteredByParent) {
+  const rows = tableItems.map((item) => (
+    <RowContainer
+      key={item.id}
+      item={item}
+      getCollapsed={getCollapsed}
+      toggleCollapse={toggleCollapse}
+    />
+  ));
 
-  //     const item = objectData[item.id]
-
-  //     arr.push(item)
-  //   }
-  // }
-  function func(data: Array<any>) {
-    const objectData: Record<
-      number,
-      DataItem & { children?: Array<DataItem> }
-    > = {};
-    for (let item of data) {
-      objectData[item.id] = { ...item };
-    }
-
-    for (let id in objectData) {
-      const elem = objectData[id];
-
-      if (elem.parentId > 0) {
-        const elemParent = objectData[elem.parentId];
-        Array.isArray(elemParent.children)
-          ? elemParent.children.push(elem)
-          : (elemParent.children = [elem]);
-      }
-    }
-
-    for (let id in objectData) {
-      if (objectData[id].parentId !== 0) {
-        delete objectData[id];
-      }
-    }
-
-    return objectData;
-  }
-
-  return <Table />;
+  return <Table> {rows} </Table>;
 };

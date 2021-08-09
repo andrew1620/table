@@ -1,5 +1,7 @@
 import React from "react";
+import { TableItem } from "./interfaces";
 
-export const Table = () => {
-  return <div></div>;
+interface Props {}
+export const Table: React.FC<Props> = ({ children }) => {
+  return <table>{children}</table>;
 };
