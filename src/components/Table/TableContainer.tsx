@@ -1,4 +1,6 @@
 import React from "react";
+import { SortOptions } from "../../commonInterfaces";
+import { useTableSort } from "../../hooks";
 import { RowContainer } from "../Row/RowContainer";
 import { TableItem } from "./interfaces";
 import { Table } from "./Table";
@@ -8,15 +10,20 @@ interface Props {
 }
 
 export const TableContainer: React.FC<Props> = ({ tableItems }) => {
-  type RecordKey = typeof tableItems[number]["id"];
+  type TItems = typeof tableItems[number];
+
+  type RecordKey = TItems["id"];
 
   const [collapsedItems, setCollapseItems] = React.useState<
     Record<RecordKey, boolean>
   >({});
 
-  React.useEffect(() => {
-    console.table(collapsedItems);
-  }, [collapsedItems]);
+  const [sortOptions, setSortOptions] = React.useState<
+    SortOptions<keyof Pick<TItems, "email" | "balance">>
+  >({
+    field: undefined,
+    direction: "ASC",
+  });
 
   const toggleCollapse = (id: RecordKey) => {
     setCollapseItems((collapsedItems) => ({
@@ -29,14 +36,28 @@ export const TableContainer: React.FC<Props> = ({ tableItems }) => {
     return !Boolean(collapsedItems[id]);
   };
 
-  const rows = tableItems.map((item) => (
+  const sortedTableItems = useTableSort(sortOptions, tableItems);
+
+  const rows = sortedTableItems.map((item) => (
     <RowContainer
       key={item.id}
       item={item}
       getCollapsed={getCollapsed}
       toggleCollapse={toggleCollapse}
+      sortOptions={sortOptions}
     />
   ));
 
-  return <Table> {rows} </Table>;
+  return (
+    <Table>
+      <button
+        onClick={() => {
+          setSortOptions({ field: "email", direction: "ASC" });
+        }}
+      >
+        ASC
+      </button>{" "}
+      {rows}{" "}
+    </Table>
+  );
 };

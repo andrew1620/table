@@ -6,3 +6,8 @@ export interface BankAccount {
     name: string;
     email: string;
 }
+
+export interface SortOptions<TField> {
+    field?: TField;
+    direction: "ASC" | "DESC";
+  }
