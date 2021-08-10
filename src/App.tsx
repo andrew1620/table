@@ -12,9 +12,14 @@ function App() {
     [bankAccounts]
   );
 
+  const getChildren = (id: keyof typeof tableItems) => tableItems[id];
+
   return (
     <div className="App">
-      <TableContainer tableItems={tableItems} />
+      <TableContainer
+        tableItems={tableItems[0] || []}
+        getChildren={getChildren}
+      />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -36,23 +41,18 @@ function App() {
 export default App;
 
 function getTableData(data: Array<BankAccount>) {
-  const objectData: Record<typeof data[number]["id"], TableItem> = {};
+  type TItem = typeof data[number];
+
+  // const objectData: Record<TItem["id"], TableItem> = {};
+  const result: Record<TItem["parentId"], TableItem[] | undefined> = {};
+
   for (let item of data) {
-    objectData[item.id] = { ...item };
-  }
-
-  const result = [];
-
-  for (let id in objectData) {
-    const elem = objectData[id];
-
-    if (elem.parentId > 0) {
-      const elemParent = objectData[elem.parentId];
-      Array.isArray(elemParent.children)
-        ? elemParent.children.push(elem)
-        : (elemParent.children = [elem]);
-    }
-    if (elem.parentId === 0) result.push(elem);
+    // objectData[item.id] = { ...item };
+    const parentId = item.parentId;
+    const ob2 = result[parentId];
+    if (ob2) {
+      ob2.push({ ...item });
+    } else result[parentId] = [item];
   }
 
   return result;

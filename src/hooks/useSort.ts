@@ -15,18 +15,20 @@ export const useTableSort = (
 ) => {
   const sortedItems = React.useMemo(() => {
     const { field, direction } = sortOption;
-
-    if (!field) return items;
+    if (!field || !items.length || !direction) return items;
+    console.log("SORT - ", items);
 
     //TODO подумать
-    return sort(items, (item1, item2) => {
-      switch (direction) {
-        case "ASC":
-          return Number(item1[field] > item2[field]) === 0 ? -1 : 1;
-        case "DESC":
-          return Number(item1[field] < item2[field]) === 0 ? -1 : 1;
-      }
-    });
+    return [
+      ...sort(items, (item1, item2) => {
+        switch (direction) {
+          case "ASC":
+            return Number(item1[field] > item2[field]) === 0 ? -1 : 1;
+          case "DESC":
+            return Number(item1[field] < item2[field]) === 0 ? -1 : 1;
+        }
+      }),
+    ];
   }, [sortOption, items]);
 
   return sortedItems;

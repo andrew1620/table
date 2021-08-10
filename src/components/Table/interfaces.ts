@@ -1,6 +1,5 @@
 import { BankAccount } from "../../commonInterfaces";
 
-
-export interface TableItem extends BankAccount  {
-    children?: Array<TableItem>;
+export interface TableItem extends BankAccount {
+  // children?: Array<TableItem>;
 }

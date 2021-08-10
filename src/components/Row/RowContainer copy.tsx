@@ -5,11 +5,13 @@ import { Cell } from "../Cell";
 import { TableItem } from "../Table/interfaces";
 import { Row } from "./Row";
 
+type TCollapsedItems = Record<TableItem["id"], boolean>;
+
 interface Props {
   item: TableItem;
   nesting?: number;
-  getVisible: (id: Props["item"]["id"]) => boolean;
-  toggleVisible: (id: Props["item"]["id"]) => boolean;
+  getCollapsed: (id: Props["item"]["id"]) => boolean;
+  toggleCollapse: (id: Props["item"]["id"]) => void;
   sortOptions: SortOptions<keyof Pick<Props["item"], "email" | "balance">>;
   getChildren: (id: Props["item"]["id"]) => Array<Props["item"]> | undefined;
   filterOptions: FilterOptions<Props["item"]>;
@@ -20,44 +22,50 @@ const buttonWidth = 25;
 export const RowContainer: React.FC<Props> = ({
   item,
   nesting = 0,
-  getVisible,
-  toggleVisible,
+  getCollapsed,
+  toggleCollapse,
   sortOptions,
   filterOptions,
   getChildren,
 }) => {
-  const isVisible = getVisible(item.id);
-  const children = React.useMemo(() => {
-    if (isVisible) return getChildren(item.id) || [];
-    return [];
-  }, [isVisible]);
+  //TODO Подумать
+  const [isCollapsed, setIsCollapsed] = React.useState(getCollapsed(item.id));
+
+  const [children, setChildren] = React.useState<
+    NonNullable<ReturnType<Props["getChildren"]>>
+  >([]);
+  const kids = React.useMemo(() => getChildren(item.id) || [], [item]);
 
   const filteredItems = useTableFilter(filterOptions, children);
 
   const sortedTableItems = useTableSort(sortOptions, filteredItems);
+  const subRows = React.useMemo(() => {
+    return sortedTableItems.map((item) => (
+      <RowContainer
+        key={item.id}
+        item={item}
+        nesting={nesting + 1}
+        getCollapsed={getCollapsed}
+        toggleCollapse={toggleCollapse}
+        sortOptions={sortOptions}
+        filterOptions={filterOptions}
+        getChildren={getChildren}
+      />
+    ));
+  }, [isCollapsed, sortedTableItems]);
 
-  const subRows = sortedTableItems.map((item) => (
-    <RowContainer
-      key={item.id}
-      item={item}
-      nesting={nesting + 1}
-      getVisible={getVisible}
-      toggleVisible={toggleVisible}
-      sortOptions={sortOptions}
-      filterOptions={filterOptions}
-      getChildren={getChildren}
-    />
-  ));
-
-  //TODO исправить
-  const filteredChildren = useTableFilter(
-    filterOptions,
-    getChildren(item.id) || []
-  );
+  React.useEffect(() => {
+    if (!isCollapsed) {
+      console.log(item.name, kids);
+      setChildren(kids);
+    }
+  }, []);
 
   const toggleItem = () => {
     const itemId = item.id;
-    toggleVisible(itemId);
+    toggleCollapse(itemId);
+    setIsCollapsed(!isCollapsed);
+    if (kids.length) setChildren(kids);
   };
   return (
     <>
@@ -68,19 +76,17 @@ export const RowContainer: React.FC<Props> = ({
               onClick={toggleItem}
               style={{
                 width: buttonWidth + "px",
-                visibility: filteredChildren.length ? "visible" : "hidden",
+                visibility: kids?.length ? "visible" : "hidden",
               }}
             >
-              {!isVisible ? "+" : "-"}
+              {isCollapsed ? "+" : "-"}
             </button>{" "}
             {item.name}
           </>
         </Cell>
         <Cell>{item.email}</Cell>
-        <Cell>{item.balance}</Cell>
-        <Cell>{String(item.isActive)}</Cell>
       </Row>
-      {isVisible && (subRows || [])}
+      {!isCollapsed && (subRows || [])}
     </>
   );
 };
