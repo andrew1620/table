@@ -1,0 +1,11 @@
+.table {
+  border-collapse: collapse;
+  border: 1px solid #eee;
+  overflow: auto;
+}
+.table > tr:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+.table > tr:nth-child(2n) {
+  background: rgb(223, 222, 222);
+}

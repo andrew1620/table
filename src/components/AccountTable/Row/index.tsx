@@ -1,9 +1,11 @@
 import React from "react";
-import { FilterOptions, SortOptions } from "../../commonInterfaces";
-import { useTableFilter, useTableSort } from "../../hooks";
-import { Cell } from "../Cell";
+
+import { useTableFilter, useTableSort } from "../../../hooks";
+import { Cell } from "../../common/Cell";
+import { Button } from "../../common/Button";
 import { TableItem } from "../Table/interfaces";
-import { Row } from "./Row";
+import { Row } from "../../common/Row";
+import { FilterOptions, SortOptions } from "../../../commonInterfaces";
 
 interface Props {
   item: TableItem;
@@ -14,8 +16,6 @@ interface Props {
   getChildren: (id: Props["item"]["id"]) => Array<Props["item"]> | undefined;
   filterOptions: FilterOptions<Props["item"]>;
 }
-
-const buttonWidth = 25;
 
 export const RowContainer: React.FC<Props> = ({
   item,
@@ -62,17 +62,18 @@ export const RowContainer: React.FC<Props> = ({
   return (
     <>
       <Row>
-        <Cell style={{ paddingLeft: nesting * buttonWidth }}>
+        <Cell style={{ paddingLeft: nesting * 20, display: "flex" }}>
           <>
-            <button
+            <Button
               onClick={toggleItem}
               style={{
-                width: buttonWidth + "px",
+                marginRight: "10px",
+                marginLeft: "10px",
                 visibility: filteredChildren.length ? "visible" : "hidden",
               }}
             >
               {!isVisible ? "+" : "-"}
-            </button>{" "}
+            </Button>{" "}
             {item.name}
           </>
         </Cell>

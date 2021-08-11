@@ -1,0 +1,5 @@
+.tr {
+}
+.tr > td:not(:first-child) {
+  border-left: 1px solid #eee;
+}

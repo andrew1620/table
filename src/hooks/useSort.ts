@@ -1,6 +1,6 @@
 import React from "react";
 import { SortOptions } from "../commonInterfaces";
-import { TableItem } from "../components/Table/interfaces";
+import { TableItem } from "../components/AccountTable/Table/interfaces";
 
 export const sort = <TItems extends Array<any>>(
   tableItems: TItems,
@@ -16,7 +16,6 @@ export const useTableSort = (
   const sortedItems = React.useMemo(() => {
     const { field, direction } = sortOption;
     if (!field || !items.length || !direction) return items;
-    console.log("SORT - ", items);
 
     //TODO подумать
     return [

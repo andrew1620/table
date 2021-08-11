@@ -1,0 +1,9 @@
+.tableHead {
+  background: #fafafa;
+}
+.tableHead > tr th:not(:first-child) {
+  border-left: 1px solid #eee;
+}
+.title {
+  margin-right: 10px;
+}

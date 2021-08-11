@@ -1,6 +1,6 @@
 import React from "react";
-import { SortOptions } from "../../commonInterfaces";
-import { Button } from "../common/button";
+import { SortOptions } from "../../../commonInterfaces";
+import { Button } from "../../common/Button";
 import { TableItem } from "../Table/interfaces";
 
 interface Props {
@@ -21,8 +21,8 @@ export const SortButton: React.FC<Props> = ({
   };
 
   const status: Record<any, string> = {
-    ASC: "<",
-    DESC: ">",
+    ASC: "\u2193",
+    DESC: "\u2191",
   };
 
   const isCurrentField = fieldName === sortOptions.field;
@@ -30,7 +30,7 @@ export const SortButton: React.FC<Props> = ({
     <Button onClick={onClick}>
       {sortOptions.direction && isCurrentField
         ? status[sortOptions.direction]
-        : "<>"}
+        : "\u21C5"}
     </Button>
   );
 };

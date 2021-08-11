@@ -1,20 +1,18 @@
 import React from "react";
+import classes from "./style.module.css";
 
 interface Props extends React.TdHTMLAttributes<HTMLElement> {}
 
 export const THead: React.FC<Props> = ({ children, style, ...props }) => {
   return (
     <th
+      className={classes.th}
       style={{
-        borderBottom: "1px solid red",
-        padding: "10px",
-        border: "1px solid green",
-        textAlign: "left",
         ...style,
       }}
       {...props}
     >
-      {children}
+      <div className={classes.content}>{children}</div>
     </th>
   );
 };

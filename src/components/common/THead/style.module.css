@@ -1,0 +1,10 @@
+.th {
+  border-bottom: 1px solid #eee;
+}
+.content {
+  padding: 10px;
+  /* border: 1px solid green; */
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}

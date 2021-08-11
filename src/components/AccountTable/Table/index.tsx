@@ -1,10 +1,10 @@
 import React from "react";
-import { FilterOptions, SortOptions } from "../../commonInterfaces";
-import { useTableFilter, useTableSort } from "../../hooks";
-import { HeadContainer } from "../Head/HeadContainer";
-import { RowContainer } from "../Row/RowContainer";
+import { useTableFilter, useTableSort } from "../../../hooks";
+import { HeadContainer } from "../TableHead";
+import { RowContainer } from "../Row";
 import { TableItem } from "./interfaces";
-import { Table } from "./Table";
+import { Table } from "../../common/Table";
+import { SortOptions, FilterOptions } from "../../../commonInterfaces";
 
 interface Props {
   tableItems: Array<TableItem>;
@@ -34,7 +34,6 @@ export const TableContainer: React.FC<Props> = ({
 
   const [filterOptions, setFilterOptions] = React.useState<
     FilterOptions<TableItem>
-    // >({ isActive: (item) => item.isActive });
   >({});
 
   const toggleVisible = (id: RecordKey) => {
@@ -77,18 +76,18 @@ export const TableContainer: React.FC<Props> = ({
           setSort={setSortOptions}
           sortOptions={sortOptions}
           columns={[
-            { title: "name", sortable: false, fieldName: "name" },
-            { title: "email", sortable: true, fieldName: "email" },
-            { title: "balance", sortable: true, fieldName: "balance" },
+            { title: "Name", sortable: false, fieldName: "name" },
+            { title: "Email", sortable: true, fieldName: "email" },
+            { title: "Balance", sortable: true, fieldName: "balance" },
             {
-              title: "active",
+              title: "Active",
               sortable: false,
               fieldName: "isActive",
               filterFunction: (item) => item.isActive,
             },
           ]}
         />
-        {rows}{" "}
+        {rows}
       </Table>
     </>
   );
